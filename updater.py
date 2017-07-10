@@ -10,14 +10,14 @@ import argparse
 
 # Parse the command line arguments (all required or else exception will be thrown)
 parser = argparse.ArgumentParser()
-parser.add_argument('-k', '--key', help='Digital Ocean API token', required=True)
+parser.add_argument('-k', '--key', help='Digital Ocean API key', required=True)
 parser.add_argument('-d', '--domain', help='Domain name the record belongs to.', required=True)
 parser.add_argument('-r', '--record', help='Subdomain record to be updated.', required=True)
 parser.add_argument('-t', '--type', help='Record type (e.g.: A or AA).', required=True)
 args = parser.parse_args()
 
 # assign the parsed args to their respective variables
-TOKEN = args.token
+KEY = args.key
 DOMAIN = args.domain
 RECORD = args.record
 RTYPE = args.type
@@ -33,7 +33,7 @@ IPv6_REGEX = '(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}
              '(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9])'\
              '{0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))'
 APIURL = "https://api.digitalocean.com/v2"
-AUTH_HEADER = {'Authorization': "Bearer %s" % TOKEN}
+AUTH_HEADER = {'Authorization': "Bearer %s" % KEY}
 
 
 def get_external_ip():
@@ -58,7 +58,7 @@ def get_external_ip():
 
 def get_domain(name=DOMAIN):
     print "Fetching Domain ID for: %s" % name
-    url = "%s/domains" % (APIURL)
+    url = "%s/domains" % APIURL
 
     while True:
         req = urllib2.Request(url, headers=AUTH_HEADER)
