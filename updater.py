@@ -117,7 +117,8 @@ def set_record_ip(domain, record, ipaddr):
     headers = {'Content-Type': 'application/json'}
     headers.update(AUTH_HEADER)
 
-    req = urllib2.Request(url, data, headers, method='PUT')
+    req = urllib2.Request(url, data, headers)
+    req.get_method = lambda: 'PUT'
     fp = urllib2.urlopen(req)
     mybytes = fp.read()
     html = mybytes.decode("utf8")
@@ -130,16 +131,13 @@ def set_record_ip(domain, record, ipaddr):
 if __name__ == '__main__':
 
     if RTYPE == 'A' or RTYPE == 'AAAA':
-        try:
-            ipaddr = get_external_ip()
-            domain = get_domain()
-            record = get_record(domain)
-            if record['data'] == ipaddr:
-                print ("Record %s.%s already set to %s." % (record['name'], domain['name'], ipaddr))
-            else:
-                print ("Updating ", RECORD, ".", DOMAIN, ":", datetime.now())
-                set_record_ip(domain, record, ipaddr)
-        except Exception as err:
-            print ("Error: ", err)
+        ipaddr = get_external_ip()
+        domain = get_domain()
+        record = get_record(domain)
+        if record['data'] == ipaddr:
+            print ("Record %s.%s already set to %s." % (record['name'], domain['name'], ipaddr))
+        else:
+            print ("Updating ", RECORD, ".", DOMAIN, ":", datetime.now())
+            set_record_ip(domain, record, ipaddr)
     else:
         print("RTYPE should be either A or AAAA")
